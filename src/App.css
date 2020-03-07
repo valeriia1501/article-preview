@@ -5,3 +5,7 @@
 .Row {
   padding: 20px 0;
 }
+
+.RowOff{
+  display: none;
+}

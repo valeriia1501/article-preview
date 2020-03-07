@@ -6,6 +6,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Prompt from './Prompt';
 
 const useStyles = makeStyles({
   card: {
@@ -41,57 +42,81 @@ const useStyles = makeStyles({
     padding: '0 10px',
     backgroundColor: '#f7faff',
     border: '1px solid #000000'
+  },
+  hiding: {
+    display: 'none'
   }
 });
 
 export default function SingleCard(props) {
   const classes = useStyles();
-  const {imgUrl, url, title, update} = props;
+  const {imgUrl, url, title, updateArticle, deleteArticle, indexRow, indexColumn} = props;
   const [isEditing, setIsEditing] = React.useState(false);
+  const [inputVal, setInputVal] = React.useState(title);
+  const [isShowing, setIsShowing] = React.useState(true);
 
-  const editTitle = () => {
-    setIsEditing(true)
-  }
+  const [openPrompt, setOpenPrompt] = React.useState(false);
 
-  const saveTitle = () => {
-    update()
-    setIsEditing(false)
-  }
+  const handleClickOpen = () => {
+    setOpenPrompt(true);
+  };
 
   const setupInput = (e) => {
     e.preventDefault();
     e.stopPropagation();
   }
 
+  const editTitle = () => {
+    setIsEditing(true);
+  }
+
+  const saveTitle = () => {
+    updateArticle(inputVal, indexRow, indexColumn);
+    setIsEditing(false);
+  }
+
+  const deleteSingle = () => {
+    deleteArticle(indexRow, indexColumn);
+  }
+
+  const hideArticle = () => {
+    setIsShowing(false);
+    handleClickOpen()
+  }
+  
+
   return (
-    <Card className={classes.card}>
+    <div className={isShowing ? '' : classes.hiding}>
+      <Card className={classes.card}>
         <CardContent className={isEditing ? classes.cardContentHoverOff : classes.cardContent} component="a" href={url}>
           <img src={imgUrl} style={{borderRadius: '5px'}} alt="Article"></img>
           {
             isEditing ? 
-              <input className={classes.input} type="text" defaultValue={title} onClick={setupInput}/>
+              <input className={classes.input} type="text" defaultValue={title} onClick={setupInput} onChange={(e) => setInputVal(e.target.value)}/>
               :
               <Typography className={classes.title} gutterBottom variant="h5" component="h2">
               {title}
             </Typography>
           }
         </CardContent>
-      <CardActions>
-        {
-          isEditing ? 
-          <Button size="small" color="primary" onClick={saveTitle}>
-            Save
+        <CardActions>
+          {
+            isEditing ? 
+            <Button size="small" color="primary" onClick={saveTitle}>
+              Save
+            </Button>
+            :
+            <Button size="small" color="primary" onClick={editTitle}>
+              Edit
+            </Button>
+          }
+          <Button size="small" color="primary" onClick={hideArticle}>
+            Delete
           </Button>
-          :
-          <Button size="small" color="primary" onClick={editTitle}>
-            Edit
-          </Button>
-        }
-        <Button size="small" color="primary">
-          Delete
-        </Button>
-      </CardActions>
-    </Card>
+        </CardActions>
+      </Card>
+      <Prompt openPrompt={openPrompt} setOpenPrompt={setOpenPrompt} deleteSingle={deleteSingle}/>
+    </div>
   );
 }
 

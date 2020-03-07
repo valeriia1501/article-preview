@@ -13,11 +13,20 @@ export default class CardGroup extends React.Component {
     };
   }  
 
-  updateState() {
+  updateArticle(title, row, column) {
     let newData = [...this.state.data];
-    newData[0].columns[0].title = 'slfslflsf';
+    newData[row].columns[column].title = title;
     this.setState({data: newData})
   }
+
+  deleteArticle(row, column) {
+    let newData = [...this.state.data];
+    // newData[row].columns.splice(column, 1);
+    delete newData[row].columns[column];
+    this.setState({data: newData})
+  }
+
+
 
   componentDidMount() {
     fetch("https://storage.googleapis.com/aller-structure-task/test_data.json")
@@ -51,12 +60,20 @@ export default class CardGroup extends React.Component {
       return (
         <div className="Container">
           {
-            data.map((elem, index) => {
-              return <Grid key={index} container spacing={3} className="Row">
+            data.map((elem, indexRow) => {
+              // let articles = elem.columns.filter(item => item == undefined);
+              return <Grid key={indexRow} container spacing={3} className={elem.columns.length !== 0 ? "Row" : "RowOff"}>
                   {
-                    elem.columns.map((subElem, index) => {
-                      return <Grid key={index} item xs={subElem.width}>
-                        <SingleCard imgUrl={subElem.imageUrl} url={subElem.url} title={subElem.title} update={this.updateState.bind(this)}/>
+                    elem.columns.map((subElem, indexColumn) => {
+                      return <Grid key={indexColumn} item xs={subElem.width}>
+                        <SingleCard
+                          indexRow={indexRow} 
+                          indexColumn={indexColumn} 
+                          imgUrl={subElem.imageUrl} 
+                          url={subElem.url} 
+                          title={subElem.title} 
+                          updateArticle={this.updateArticle.bind(this)}
+                          deleteArticle={this.deleteArticle.bind(this)}/>
                       </Grid>
                     })
                   }
