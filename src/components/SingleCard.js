@@ -56,10 +56,18 @@ export default function SingleCard(props) {
   const [isShowing, setIsShowing] = React.useState(true);
 
   const [openPrompt, setOpenPrompt] = React.useState(false);
+  const [timeoutPrompt, setTimeoutPrompt] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpenPrompt(true);
+    let notific = setTimeout(() => timeOut(), 4000);
+    setTimeoutPrompt(notific);
   };
+
+  const timeOut = () => {
+    deleteSingle();
+    setOpenPrompt(false);
+  }
 
   const setupInput = (e) => {
     e.preventDefault();
@@ -81,15 +89,39 @@ export default function SingleCard(props) {
 
   const hideArticle = () => {
     setIsShowing(false);
-    handleClickOpen()
+    handleClickOpen();
   }
-  
+
+  const imgUrlParse = (str) => {
+    // console.log(imgUrl);
+    const url = "https://dbstatic.no/?imageId=72007624&panoy=5.3763440860215&panox=0&panow=100&panoh=52.688172043011&heightw=0&heighth=0&heighty=0&heightx=0&height=150&width=110";
+    if (url.includes(str)) {
+      const midFirstIndex = url.indexOf(str) + 1;
+      const midUrl = url.slice(midFirstIndex, url.length);
+      let midLastIndex;
+      midUrl.includes('&') ? midLastIndex = midUrl.indexOf('&') : midLastIndex = midUrl.length;
+      const parameter = midUrl.slice(str.length - 1, midLastIndex) + 'px';
+      return parameter;
+      console.log(parameter); 
+    } 
+  }
+
+  imgUrlParse('&height=');
+  imgUrlParse('&width=');
+
 
   return (
     <div className={isShowing ? '' : classes.hiding}>
       <Card className={classes.card}>
         <CardContent className={isEditing ? classes.cardContentHoverOff : classes.cardContent} component="a" href={url}>
-          <img src={imgUrl} style={{borderRadius: '5px'}} alt="Article"></img>
+          <img 
+            src="https://dbstatic.no/?imageId=72007624&panoy=5.3763440860215&panox=0&panow=100&panoh=52.688172043011&heightw=0&heighth=0&heighty=0&heightx=0" 
+            style={{borderRadius: '5px'}} 
+            width={imgUrlParse('&width=')}
+            // width='120.56px'
+            height={imgUrlParse('&height=')}
+            alt="Article">
+          </img>
           {
             isEditing ? 
               <input className={classes.input} type="text" defaultValue={title} onClick={setupInput} onChange={(e) => setInputVal(e.target.value)}/>
@@ -115,7 +147,12 @@ export default function SingleCard(props) {
           </Button>
         </CardActions>
       </Card>
-      <Prompt openPrompt={openPrompt} setOpenPrompt={setOpenPrompt} deleteSingle={deleteSingle}/>
+      <Prompt 
+        openPrompt={openPrompt} 
+        setOpenPrompt={setOpenPrompt} 
+        deleteSingle={deleteSingle} 
+        setIsShowing={setIsShowing} 
+        timeoutPrompt={timeoutPrompt}/>
     </div>
   );
 }

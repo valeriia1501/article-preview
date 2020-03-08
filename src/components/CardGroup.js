@@ -61,7 +61,6 @@ export default class CardGroup extends React.Component {
         <div className="Container">
           {
             data.map((elem, indexRow) => {
-              // let articles = elem.columns.filter(item => item == undefined);
               return <Grid key={indexRow} container spacing={3} className={elem.columns.length !== 0 ? "Row" : "RowOff"}>
                   {
                     elem.columns.map((subElem, indexColumn) => {
