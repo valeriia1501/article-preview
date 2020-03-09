@@ -60,7 +60,7 @@ export default function SingleCard(props) {
 
   const handleClickOpen = () => {
     setOpenPrompt(true);
-    let notific = setTimeout(() => timeOut(), 4000);
+    let notific = setTimeout(() => timeOut(), 2000);
     setTimeoutPrompt(notific);
   };
 
@@ -91,34 +91,25 @@ export default function SingleCard(props) {
     setIsShowing(false);
     handleClickOpen();
   }
-
   const imgUrlParse = (str) => {
-    // console.log(imgUrl);
-    const url = "https://dbstatic.no/?imageId=72007624&panoy=5.3763440860215&panox=0&panow=100&panoh=52.688172043011&heightw=0&heighth=0&heighty=0&heightx=0&height=150&width=110";
-    if (url.includes(str)) {
-      const midFirstIndex = url.indexOf(str) + 1;
-      const midUrl = url.slice(midFirstIndex, url.length);
+    if (imgUrl.includes(str)) {
+      const midFirstIndex = imgUrl.indexOf(str) + 1;
+      const midUrl = imgUrl.slice(midFirstIndex, imgUrl.length);
       let midLastIndex;
       midUrl.includes('&') ? midLastIndex = midUrl.indexOf('&') : midLastIndex = midUrl.length;
       const parameter = midUrl.slice(str.length - 1, midLastIndex) + 'px';
       return parameter;
-      console.log(parameter); 
     } 
   }
-
-  imgUrlParse('&height=');
-  imgUrlParse('&width=');
-
 
   return (
     <div className={isShowing ? '' : classes.hiding}>
       <Card className={classes.card}>
         <CardContent className={isEditing ? classes.cardContentHoverOff : classes.cardContent} component="a" href={url}>
           <img 
-            src="https://dbstatic.no/?imageId=72007624&panoy=5.3763440860215&panox=0&panow=100&panoh=52.688172043011&heightw=0&heighth=0&heighty=0&heightx=0" 
+            src={imgUrl}
             style={{borderRadius: '5px'}} 
             width={imgUrlParse('&width=')}
-            // width='120.56px'
             height={imgUrlParse('&height=')}
             alt="Article">
           </img>
@@ -134,9 +125,14 @@ export default function SingleCard(props) {
         <CardActions>
           {
             isEditing ? 
-            <Button size="small" color="primary" onClick={saveTitle}>
-              Save
-            </Button>
+            <div>
+              <Button size="small" color="primary" onClick={saveTitle}>
+                Save
+              </Button>
+              <Button size="small" color="primary" onClick={() => setIsEditing(false)}>
+                Cancel
+              </Button>
+            </div>
             :
             <Button size="small" color="primary" onClick={editTitle}>
               Edit

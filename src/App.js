@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
-import CardGroup from './components/CardGroup';
+import Dashboard from './Dashboard';
 
 class App extends React.Component {
   render() {
     return (
       <div>
-        <CardGroup/>
+        <Dashboard/>
       </div>
     )
   }

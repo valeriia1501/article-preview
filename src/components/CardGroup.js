@@ -21,9 +21,22 @@ export default class CardGroup extends React.Component {
 
   deleteArticle(row, column) {
     let newData = [...this.state.data];
-    // newData[row].columns.splice(column, 1);
     delete newData[row].columns[column];
     this.setState({data: newData})
+  }
+
+  isContainerHasChidren(row) {
+    let isUndefined;
+    for (let item of this.state.data[row].columns) {
+      if (item !== undefined) {
+        isUndefined = true;
+        break;
+      } else {
+        isUndefined = undefined;
+      }
+    }
+
+    return isUndefined === undefined ? false : true;
   }
 
 
@@ -37,15 +50,12 @@ export default class CardGroup extends React.Component {
             isLoaded: true,
             data: result[0]
           });
-          console.log(result[0]);
-          console.log(this.state.data[0].type);
         },
         (error) => {
           this.setState({
             isLoaded: true,
             error
           });
-          console.log(error);
         }
       )
   } 
@@ -61,7 +71,10 @@ export default class CardGroup extends React.Component {
         <div className="Container">
           {
             data.map((elem, indexRow) => {
-              return <Grid key={indexRow} container spacing={3} className={elem.columns.length !== 0 ? "Row" : "RowOff"}>
+              return this.isContainerHasChidren(indexRow) ? 
+               <Grid 
+                key={indexRow} 
+                container spacing={3} className="Row">
                   {
                     elem.columns.map((subElem, indexColumn) => {
                       return <Grid key={indexColumn} item xs={subElem.width}>
@@ -76,7 +89,7 @@ export default class CardGroup extends React.Component {
                       </Grid>
                     })
                   }
-              </Grid>
+              </Grid> : ''
             })
           }
         </div>
